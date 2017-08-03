@@ -4,10 +4,9 @@
   "description": "a simple backend made in node with restify for a todo app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist",
-    "build": "npm run clean && webpack",
-    "dev": "NODE_ENV=development npm run build && node --harmony dist/server.js"
+    "build": "npm run clean && NODE_ENV=development gulp build",
+    "dev": "NODE_ENV=development gulp run"
   },
   "keywords": [
     "restify",
@@ -16,17 +15,23 @@
   "author": "michael klemersson",
   "license": "ISC",
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-core": "~6.25.0",
+    "babel-loader": "~7.1.0",
+    "babel-plugin-transform-runtime": "~6.23.0",
     "babel-preset-env": "^1.5.2",
-    "copy-webpack-plugin": "^4.0.1",
-    "webpack": "^3.0.0",
-    "webpack-node-externals": "^1.6.0"
+    "babel-preset-es2015": "~6.24.1",
+    "copy-webpack-plugin": "~4.0.1",
+    "deep-extend": "^0.5.0",
+    "gulp": "^3.9.1",
+    "nodemon": "^1.11.0",
+    "source-map-support": "^0.4.15",
+    "webpack": "~3.0.0",
+    "webpack-node-externals": "~1.6.0"
   },
   "dependencies": {
     "co": "^4.6.0",
     "mongoose": "~4.10.*",
+    "node-env-file": "^0.1.8",
     "restify": "~4.3.*",
     "restify-errors": "~4.3.*",
     "restify-router": "~0.4.*"

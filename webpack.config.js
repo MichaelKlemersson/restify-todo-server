@@ -1,15 +1,18 @@
-const path = require('path')
-const nodeExternals = require('webpack-node-externals')
+const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const env = process.env.NODE_ENV
+const nodeExternals = require('webpack-node-externals');
+const merge = require('./config/helper/mergeHelper');
+let commonConfig = require('./config');
 
-module.exports = {
+let settings = merge({
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'dist'),
         filename: 'server.js'
     },
     target: 'node',
+    context: __dirname,
     externals: [nodeExternals()],
     resolve: {
         extensions: ['.js'],
@@ -18,27 +21,26 @@ module.exports = {
             'support': path.resolve(__dirname, 'src/support/')
         }
     },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['env'],
-                        plugins: ['transform-runtime']
-                    }
-                }
-            }
-        ]
-    },
-    plugins: env === 'production'
-    ? [
+    module: {}
+}, commonConfig);
 
-    ] : [
-        new CopyWebpackPlugin([
-            { from: path.resolve(__dirname, 'src/.env') }
-        ])
-    ]
+settings.plugins = [
+    new CopyWebpackPlugin([
+        { from: path.resolve(__dirname, 'src/.env') }
+    ]),
+    new webpack.IgnorePlugin(/\.(css|less)$/),
+    new webpack.BannerPlugin({
+        banner: "hash:[hash], chunkhash:[chunkhash], name:[name], filebase:[filebase], query:[query], file:[file]"
+    })
+];
+
+if (process.env.NODE_ENV === 'production') {
+    settings.plugins.push(new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        },
+        mangle: true
+    }));
 }
+
+module.exports = settings;
